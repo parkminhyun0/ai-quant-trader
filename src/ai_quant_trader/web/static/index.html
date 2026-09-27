@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="국내·미국 주식 시가총액 상위 100개 읽기 전용 대시보드" />
+    <title>시가총액 100 · AI Quant Trader</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2308121f'/%3E%3Cpath d='M14 43 25 31l8 7 17-20' fill='none' stroke='%236ee7b7' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">AI QUANT TRADER · MARKET VIEW</p>
+          <h1>시가총액 100</h1>
+        </div>
+        <div class="status" aria-live="polite">
+          <span class="status-dot" id="statusDot"></span>
+          <div>
+            <strong id="statusLabel">연결 확인 중</strong>
+            <span id="updatedAt">—</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="control-deck" aria-label="시장과 종목 필터">
+        <div class="market-tabs" role="tablist" aria-label="시장 선택">
+          <button class="market-tab is-active" role="tab" aria-selected="true" data-market="KR">국내</button>
+          <button class="market-tab" role="tab" aria-selected="false" data-market="US">미국</button>
+        </div>
+        <label class="search-box">
+          <span class="sr-only">종목명 또는 종목코드 검색</span>
+          <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+          <input id="searchInput" type="search" placeholder="종목명·코드 검색" autocomplete="off" />
+        </label>
+        <button class="refresh-button" id="refreshButton" type="button">새로고침</button>
+      </section>
+
+      <section class="summary-grid" aria-label="시장 요약">
+        <article><span>조회 시장</span><strong id="marketName">대한민국 · KRX</strong></article>
+        <article><span>표시 종목</span><strong id="visibleCount">0 / 100</strong></article>
+        <article><span>데이터 출처</span><strong id="sourceName">연결 대기</strong></article>
+        <article><span>갱신 정책</span><strong>30초 · 읽기 전용</strong></article>
+      </section>
+
+      <section class="table-panel" aria-labelledby="rankingTitle">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">MARKET CAPITALIZATION</p>
+            <h2 id="rankingTitle">국내 시가총액 순위</h2>
+          </div>
+          <p id="delayNote" class="delay-note">공급자 연결 상태를 확인하고 있습니다.</p>
+        </div>
+
+        <div id="message" class="message" hidden></div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">순위</th>
+                <th scope="col">종목</th>
+                <th scope="col" class="numeric">현재가</th>
+                <th scope="col" class="numeric">등락률</th>
+                <th scope="col" class="numeric">시가총액</th>
+                <th scope="col" class="numeric desktop-only">거래량</th>
+              </tr>
+            </thead>
+            <tbody id="stockRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer>
+        <p>시세는 공급자의 이용 조건과 지연 정책을 따릅니다. 투자 권유나 주문 신호가 아닙니다.</p>
+      </footer>
+    </main>
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>
