@@ -45,15 +45,57 @@ function escapeHtml(value) {
   return String(value).replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[character]));
 }
 
+function pagesDemoPayload(market) {
+  const isKr = market === "KR";
+  const now = new Date();
+  const stocks = Array.from({ length: 100 }, (_, index) => {
+    const rank = index + 1;
+    const price = isKr ? 120000 - (index * 730) : 520 - (index * 3.1);
+    const marketCap = isKr ? 500000000000000 - (index * 4200000000000) : 3500000000000 - (index * 31000000000);
+    return {
+      rank,
+      market,
+      exchange: isKr ? "KRX-DEMO" : "US-DEMO",
+      symbol: isKr ? `KR${String(rank).padStart(4, "0")}` : `US${String(rank).padStart(3, "0")}`,
+      name: isKr ? `국내 데모 종목 ${rank}` : `US Demo Stock ${rank}`,
+      price: Math.max(price, isKr ? 1000 : 1),
+      change: 0,
+      change_percent: ((index % 9) - 4) * 0.37,
+      market_cap: Math.max(marketCap, isKr ? 100000000 : 1000000),
+      volume: 100000 + (index * 7319),
+      currency: isKr ? "KRW" : "USD",
+    };
+  });
+
+  return {
+    market,
+    source: "GitHub Pages · 안전 데모",
+    mode: "demo",
+    as_of: now.toISOString(),
+    is_delayed: null,
+    delay_note: "표시 값은 화면 검증용 합성 데이터이며 실제 시세가 아닙니다.",
+    stocks,
+  };
+}
+
+async function fetchPayload() {
+  if (window.location.hostname.endsWith("github.io")) {
+    return pagesDemoPayload(state.market);
+  }
+
+  const response = await fetch(`/api/market-cap?market=${state.market}&limit=100`, { cache: "no-store" });
+  const payload = await response.json();
+  if (!response.ok) throw new Error(payload.detail || "시장 데이터를 불러오지 못했습니다.");
+  return payload;
+}
+
 async function load() {
   $("refreshButton").disabled = true;
   $("statusLabel").textContent = "갱신 중";
   $("statusDot").style.background = "#f4b942";
   $("message").hidden = true;
   try {
-    const response = await fetch(`/api/market-cap?market=${state.market}&limit=100`, { cache: "no-store" });
-    const payload = await response.json();
-    if (!response.ok) throw new Error(payload.detail || "시장 데이터를 불러오지 못했습니다.");
+    const payload = await fetchPayload();
     state.rows = payload.stocks;
     $("sourceName").textContent = payload.source;
     $("updatedAt").textContent = new Date(payload.as_of).toLocaleString("ko-KR");
