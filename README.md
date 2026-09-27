@@ -44,6 +44,16 @@ Signal
 
 완료 기준은 Signal 한 건이 위험 심사, 주문 의도, Outbox, FakeBroker 제출, 이벤트 Inbox, 체결 원장, 현금·포지션 projection까지 통과하고 중복·중단 상황에서 안전하게 복구되는 것입니다.
 
+## 시가총액 대시보드
+
+국내와 미국 주식을 분리하여 시가총액 상위 100개를 표시하는 읽기 전용 화면을 제공합니다. 한국투자 Open API 키를 서버 환경변수로 설정하면 국내 KRX와 미국 NYSE·NASDAQ·AMEX 순위를 조회합니다.
+
+```bash
+uvicorn ai_quant_trader.web.app:app --reload
+```
+
+브라우저에서 `http://127.0.0.1:8000`을 엽니다. 키가 없으면 연결 안내가 표시되며, UI 확인이 필요할 때만 `MARKET_DATA_DEMO=true`를 사용합니다. 데모 데이터는 실제 시세가 아닙니다.
+
 ## 문서
 
 - [초기 설계 기준서](PROJECT_SPEC.md)
